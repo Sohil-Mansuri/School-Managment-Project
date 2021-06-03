@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewBag.Title = "Result";
+}
+
+<br />
+<br />
+
+<div class="container">
+
+    <div class="form-group">
+        <label for="rollno" class="col-md-1" style="padding-top:5px;">Roll No </label>
+        <input type="text" name="tname" class="form-control col-md-2" id="rollno" />
+
+
+        <button style="margin-left:30px;" class="btn btn-success" id="resultcheck">Check Result</button>
+    </div>
+
+</div>
+<hr />
+<div id="resulthere">
+
+</div>
+
+<script>
+
+
+
+    $(document).ready(function () {
+          
+        $("#rollno").focus();
+
+               
+         
+        })
+
+    $("#resultcheck").click(function () {
+
+           var rol = $("#rollno").val();
+            if (rol == "") {
+                alert("Please Enter Your RollNumber to check Result");
+                return;
+            }
+
+                $.ajax({
+                    url: "/Home/Result?rollno=" + rol,
+                    type: "POST",
+                    success: function (data) {
+                        $("#resulthere").html(data);
+                    },
+                    error: function () {
+                        alert("There is Something wrong while processing your requesting...");
+                    }
+
+
+                })
+
+
+
+            
+
+
+
+
+
+        })
+
+
+
+        
+
+
+</script>
+
+
+

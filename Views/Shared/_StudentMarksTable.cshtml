@@ -1,0 +1,92 @@
+﻿
+@model School_Managment_System.Models.Result
+
+
+
+<div style="background-color:lightcyan;border:1px dotted black; border-radius:10px;">
+
+    <div style="padding:50px">
+
+
+        <label class="col-md-1">Name :</label>
+        <label class="col-md-2">@Model.Name</label>
+
+        <label class="col-md-offset-1">RollNo:</label>
+        <label>@Model.RollNo</label>
+
+
+
+        <br /><br />
+        <label class="col-md-1">Examp Type :</label>
+        <label class="col-md-3">@Model.ExamType</label>
+
+
+
+        <label class="col-md-offset-0">Class :</label>
+        <label>@Model.Class</label>
+        <br />
+        <br />
+        <br />
+
+        <label class="col-md-1">Percentage:</label>
+        <label class="col-md-2">@Model.percentage</label>
+
+        <br />
+
+
+
+    </div>
+</div>
+
+<br />
+<br />
+
+<table id="ResultTable" class="table table-bordered table-striped">
+    <thead>
+        <tr style="background-color:lightgray;">
+
+            <th>Subject code</th>
+            <th>Subject Name</th>
+            <th>Total Marks</th>
+            <th>Marks Obtain</th>
+
+        </tr>
+
+
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ListofStudetnMarks)
+        {
+            <tr class="text-center">
+                <td>@item.SubjectId</td>
+                <td>@item.subjectName</td>
+                <td>@item.Totalmarks</td>
+                <td>@item.MarksObtain</td>
+            </tr>
+        }
+
+        <tr class="text-center" style="letter-spacing:2px; font-weight:bold;">
+            <td colspan="2">Total Marks</td>
+            <td>@Model.Total</td>
+            <td>@Model.Obtain</td>
+        </tr>
+            
+    </tbody>
+
+
+
+
+
+</table>
+
+@if (@Model.percentage > 50)
+{
+    <div class="alert alert-success text-center">Congragulation ! you have passed this exam..</div>
+}
+@if(@Model.percentage<50){ 
+
+<div class="alert alert-success text-center">Sorry ! You are Failed in this Exam</div>
+
+}
+
+

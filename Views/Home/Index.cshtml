@@ -1,0 +1,314 @@
+﻿@model School_Managment_System.ViewModels.StudentMasterViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+
+<button class="btn btn-info" data-toggle="modal" data-target="#Mymodal">Add Student Marks</button>&nbsp;
+
+<a href="@Url.Action("Result","Home")" class="btn btn-primary">Check Result</a>
+
+<div id="Mymodal" class="modal fade"  data-backdrop="static">
+
+    <div class="modal-dialog" style="width:800px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal">&times;</button>
+                <h3 class="text-center">Studen Result</h3>
+               
+                
+                <div class="modal-body">
+
+                    <div class="container">
+                        
+                        <div class="form-group col-md-6">
+                            @Html.LabelFor(m=>m.Name)
+                            @Html.TextBoxFor(m => m.Name, new { @class="form-control", autocomplete="off"})
+                        </div>
+                        <div class="form-group col-md-6">
+                            @Html.LabelFor(m => m.className)
+                            @Html.DropDownListFor(m=>m.className,new SelectList(new List<int> {9,10,11,12 }),"Select Class", new { @class="form-control"})
+                        </div>
+                        <div class="form-group col-md-6">
+                            @Html.LabelFor(m => m.RollNo)
+                            @Html.TextBoxFor(m => m.RollNo, new { @class = "form-control" })
+                        </div>
+
+
+                        <div class="form-group col-md-6">
+                            @Html.LabelFor(m => m.ExamId)
+                            @Html.DropDownListFor(m => m.ExamId, Model.ExamType,"Select Exam Type", new { @class = "form-control" })
+                        </div>
+                        
+                        <h3 class="text-info">Student Marks</h3><hr />
+                        <div class="form-group col-md-6">
+                            @Html.LabelFor(m => m.SubjectId)
+                            @Html.DropDownListFor(m => m.SubjectId, Model.SubjectType,"Select Subject", new { @class = "form-control" })
+                        </div>
+
+                        
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.TotalMarks)
+                            @Html.TextBoxFor(m => m.TotalMarks, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.MarksObtain)
+                            @Html.TextBoxFor(m => m.MarksObtain, new { @class = "form-control" })
+                        </div>
+                        <br />
+
+                        <div class="form-group" style="float:right;" >
+                            <button id="Adddata" class="btn btn-success">Add</button>
+                        </div>
+                        <br />
+                        <br />
+
+                        <div class="form-group">
+                            <table id="Mytable" class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>Subject Id</th>
+                                        <th>Subject</th>
+                                        <th>Total Marks </th>
+                                        <th>Marks obtain</th>
+                                        <th> Percentage</th>
+                                        <th>Edit</th>
+                                        <th>Remove</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+
+
+
+
+                    </div>
+                    
+
+                </div>
+                <div class="modal-footer">
+                    <button id="Send" type="submit" class="btn btn-info">Save</button>&nbsp;
+                    <button class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+
+
+
+        $("#Adddata").click(function () {
+
+
+            AddtoTable();
+        })
+
+        $("#Send").click(function () {
+
+            SendToDatabase();
+      
+        })
+
+
+        })
+
+        function AddtoTable() 
+        {
+
+            
+            var subjectid = $("#SubjectId").val();   // for reference, pointing to curreent row, to delete or update
+            var marksobtain = $("#MarksObtain").val();
+            var totalmarks = $("#TotalMarks").val();
+            var percentage = parseFloat((marksobtain / totalmarks) * 100);
+            percentage = percentage.toFixed(2);
+
+            var subject = $("#SubjectId option:selected").text();
+
+            if (subjectid == "") {
+                alert("Please select Subject");
+                return;
+            }
+
+            if (totalmarks==0) {
+                alert("Please enter Total marks marks");
+                $("#TotalMarks").focus();
+                return;
+            }
+            if (marksobtain == 0) {
+                alert("Please enter marks Student obtained");
+                $("#MarksObtain").focus();
+                return;
+
+
+            }
+
+            
+            if (parseInt(totalmarks)<parseInt(marksobtain)) {
+                alert("Marks obtained by Student is Grether than Total Marks ");
+                $("#MarksObtain").focus();
+                return;
+
+            }
+
+
+
+    var rowdata = "<tr><td>"+subjectid +"</td><td>"+subject+ "</td><td>" + totalmarks + "</td><td>" + marksobtain + "</td><td>"
+                + percentage + "</td><td><button  class='btn btn-success' onclick='Editfun(this)'>Edit</button>" 
+                +"</td><td><button  class='btn btn-primary' onclick='Removefun(this)'>Remove</button>" + "</td></tr>";
+            
+            //logic if same subject Added agin 
+
+                     var tabledata = $("#Mytable").find("tr:gt(0)");
+                     var flag = false;
+
+                $.each(tabledata, function(){
+
+                    var listofsubjectid = $(this).find("td:eq(0)").text();
+                    var subject = $("#SubjectId option:selected").text();
+
+
+                    if (listofsubjectid == subjectid) {
+                        alert(subject + ":subject marks is already Added into Table");
+                        flag = true;
+                        return;
+
+                    }
+
+
+
+
+                })
+                if (flag == true) {
+                    return;
+                }
+
+
+
+
+
+
+
+            $("#Mytable").append(rowdata);
+
+            $("#MarksObtain").val("");
+            $("#TotalMarks").val("");
+            $("#SubjectId").val("");
+
+
+
+
+        }
+
+        function SendToDatabase() {
+
+            var tabledata = $("#Mytable").find("tr:gt(0)");     // whole table excluding header all tr 
+
+            var tableMarkslist = [];
+
+            $.each(tabledata, function () {
+
+                var studentMarks = {                                //object of studetnMarks and push in the list 
+                                                                                      
+                    SubjectId:$(this).find("td:eq(0)").text(),                            // here this means current row
+                    Totalmarks: $(this).find("td:eq(2)").text(),
+                    MarksObtain: $(this).find("td:eq(3)").text(),
+                    Percentage:$(this).find("td:eq(4)").text()
+                }                                                                   // 0th column
+                tableMarkslist.push(studentMarks);
+
+            })
+
+            var StudentDetails = {
+
+                StudentName: $("#Name").val(),
+                ClassName: $("#className").val(),
+                ExamId: $("#ExamId").val(),
+                RollNo: $("#RollNo").val(),
+
+                ListOfStudtnMarks:tableMarkslist                            // passing select Table into studentdetaila propery
+                
+
+            }
+
+            $.ajax({
+                method: "POST",
+                data: StudentDetails,
+                url: "/Home/AddStudentDetailsIntoDatabase",
+                success: function (data) {
+                    if (data.status == "OK") {
+                        alert(data.message);
+                        $("#Name").val("");
+                        $("#className").val("");
+                        $("#RollNo").val("");
+                        $("#ExamId").val("");
+                        $("#Mytable tr:gt(0)").remove();
+                        $("#SubjectId").val("");
+
+
+
+
+                    }
+
+
+                },
+                error: function () {
+                    alert("Error");
+
+                }
+
+            });
+
+            
+        }
+
+        function Removefun(CurrentRow)
+        {
+
+            $(CurrentRow).closest("tr").remove();
+        }
+        function Editfun(CurrentRow)
+        {
+
+            var subject = $(CurrentRow).closest("tr").find("td:eq(0)").text();
+            $("#SubjectId").val(subject);
+           
+            var totalmarks = $(CurrentRow).closest("tr").find("td:eq(2)").text();
+            $("#TotalMarks").val(totalmarks);
+
+            var marksobtain = $(CurrentRow).closest("tr").find("td:eq(3)").text();
+            $("#MarksObtain").val(marksobtain);
+
+            $("#SubjectId").focus();
+
+            $(CurrentRow).closest("tr").remove();
+           
+            
+        }
+
+    
+            
+            
+        
+        
+    
+
+
+</script>
